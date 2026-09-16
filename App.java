@@ -43,9 +43,6 @@ public class App {
 
         System.out.println("Index do elemento 44: " + l.indexOf(44));
         
-
-
-        
         System.out.println("Lista de trás para frente: \n"+l.toStringBackToFront());
         
         l.reverse();
@@ -54,9 +51,9 @@ public class App {
 
         Integer a[] = l.subList(4, 7);
         System.out.println("Sublist(4,7)");
-        //for(Integer i : a) {
-        //    System.out.println(i);
-        //}
+        for(Integer i : a) {
+            System.out.println(i);
+        }
         
         DoubleLinkedListOfInteger l2 = new DoubleLinkedListOfInteger();
         l2.add(1);
@@ -73,4 +70,6 @@ public class App {
         l2.unique();
         System.out.println("l2 apos remover repetidos: \n" + l2); 
     }
+
+
 }

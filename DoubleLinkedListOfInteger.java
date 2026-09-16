@@ -151,21 +151,13 @@ public class DoubleLinkedListOfInteger {
     */
     public Integer set(int index, Integer element) { // O(n)
         if(index < 0 || index >= size()){
-            throw new IndexOutOfBoundsException("Inválido");
+            throw new IndexOutOfBoundsException("Index Inválido");
         }
         Integer n = getNodeIndex(index).element;
         getNodeIndex(index).element = element;
         return n;
     }
-    /*   Node n = new Node(element);
-        Node aux = getNodeIndex(index);
-        n.prev = aux.prev;
-        n.next = aux.next;
-        n.prev.next = n;
-        n.next.prev = n;
-        Integer num = aux.element;
-        return num;
-    }*/
+
 
     /**
      * Retorna um arranjo com uma copia de um subconjunto dos elementos da
@@ -179,10 +171,24 @@ public class DoubleLinkedListOfInteger {
      * @throws IndexOutOfBoundsException se (fromIndex < 0 || toIndex > size())
      * @throws IllegalArgumentException se (fromIndex > toIndex)
      */
-    public Integer[] subList(int fromIndex, int toIndex) { // O(???)
+    public Integer[] subList(int fromIndex, int toIndex) { // O(n)
+        if (fromIndex < 0 || toIndex > size()) {
+            throw new IndexOutOfBoundsException("Inválido");
+        }
+        if (fromIndex > toIndex) {
+            throw new IllegalArgumentException("fromIndex não pode ser maior que toIndex");
+        }
 
+        Integer[] resultado = new Integer[toIndex - fromIndex];
+        Node aux = getNodeIndex(fromIndex);
 
-        return null;
+        for (int i = 0; i < resultado.length; i++) {
+            resultado[i] = aux.element;
+            aux = aux.next;
+        }
+
+        return resultado;
+
     }
         
     /**
@@ -190,7 +196,15 @@ public class DoubleLinkedListOfInteger {
      * @param element o elemento a ser testado
      * @return true se a lista contém o elemento especificado
      */
-    public boolean contains(Integer element) { // O(???)
+    public boolean contains(Integer element) { // O(n)
+        Node aux = header;
+        while (aux != null){
+            if (aux.element.equals(element)) {
+                return true;
+            }
+            aux = aux.next;
+        }
+
         return false;
     }
     
@@ -215,7 +229,12 @@ public class DoubleLinkedListOfInteger {
     /**
      * Esvazia a lista
      */
-    public void clear() { // O(???)
+    public void clear() { // O(1)
+        header = new Node(null);
+        trailer = new Node(null);
+        header.next = trailer;
+        trailer.prev = header;
+        count = 0;
     }    
         
     /**
@@ -223,6 +242,7 @@ public class DoubleLinkedListOfInteger {
      * @return o numero de elementos da lista
      */
     public int size() { // O(1)
+
         return count;
     }
     
@@ -231,6 +251,7 @@ public class DoubleLinkedListOfInteger {
      * @return true se a lista não contem elementos
      */
     public boolean isEmpty() { // O(1)
+
         return (count == 0);
     }
         
@@ -255,21 +276,57 @@ public class DoubleLinkedListOfInteger {
      * Retorna a representação em String da lista, do final para o início
      * @return
      */
-    public String toStringBackToFront() { // O(???)
-        return null;
+    public String toStringBackToFront() { // O(n)
+        StringBuilder s = new StringBuilder();
+        s.append("[");
+        Node aux = trailer.prev;
+
+        while (aux != header) {
+            s.append(aux.element.toString());
+            s.append(",");
+            aux = aux.prev;
+        }
+        if (s.length() > 1)
+            s.deleteCharAt(s.length()-1); // Deleta a última vírgula
+        s.append("]");
+        return s.toString();
     } 
     
     /**
      * Inverte a ordem dos elementos da lista
      */
-    public void reverse() { // O(???)
-        return;
+    public void reverse() { // O(n)
+        Node aux = header;
+
+        while (aux != null) {
+            Node aux2 = aux.next;
+            aux.next = aux.prev;
+            aux.prev = aux2;
+            aux = aux2;
+        }
+
+        Node aux3 = header;
+        header = trailer;
+        trailer = aux3;
     }
     
     /**
      * Remove os elementos duplicados da lista, mantendo a primeira ocorrência
      * de cada elemento.
      */
-    public void unique() { // O(???)
+    public void unique() { // O(n²)
+        for (Node aux = header.next; aux != trailer; aux = aux.next) {
+
+            Node prox;
+            for (Node aux2 = aux.next; aux2 != trailer; aux2 = prox) {
+                prox = aux2.next;
+
+                if (aux2.element.equals(aux.element)) {
+                    aux2.prev.next = aux2.next;
+                    aux2.next.prev = aux2.prev;
+                    count--;
+                }
+            }
+        }
         }
 }
